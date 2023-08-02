@@ -117,3 +117,16 @@ def check_password():
 if check_password():
     st.write("Here goes your normal Streamlit app...")
     st.button("Click me")
+
+
+# add basic font styling
+streamlit_style = """
+			<style>
+			@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+
+			html, body, [class*="css"]  {
+			font-family: 'Roboto', sans-serif;
+			}
+			</style>
+			"""
+st.markdown(streamlit_style, unsafe_allow_html=True)
