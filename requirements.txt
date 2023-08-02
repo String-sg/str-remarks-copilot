@@ -1,0 +1,6 @@
+streamlit
+pandas
+openai
+PIL
+os
+dotenv
