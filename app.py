@@ -9,7 +9,7 @@ st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 
 
 # Set your OpenAI GPT-3 API key
-gpt3_api_key = st.secrets("GPT_API_KEY")
+openai.api_key = st.secrets["GPT_API_KEY"]
 
 # Function to generate student remarks using GPT-3
 
