@@ -2,18 +2,14 @@ import streamlit as st
 import pandas as pd
 import openai
 from PIL import Image
-import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
 
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 
 
 # Set your OpenAI GPT-3 API key
-gpt3_api_key = os.getenv("GPT3_API_KEY")
+gpt3_api_key = st.secrets("GPT_API_KEY")
 
 # Function to generate student remarks using GPT-3
 
