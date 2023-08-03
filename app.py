@@ -93,7 +93,7 @@ def check_password():
         # First run, show input for password.
         st.image(img, width=100)
         st.title("Remarks Co-Pilot")
-        st.write("Beta access for Hwa Chong Users Demo")
+        st.write("Beta access - limited demo as proof of concept")
         st.text_input(
             "Password", type="password", on_change=password_entered, key="password"
         )
