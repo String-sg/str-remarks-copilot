@@ -1,7 +1,3 @@
 streamlit
 pandas
-<<<<<<< HEAD
 openai
-=======
-openai
->>>>>>> 7815688 (removed dotenv req and use streamlit secrets handling instead)
