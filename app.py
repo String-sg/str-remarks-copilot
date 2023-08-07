@@ -14,10 +14,11 @@ openai.api_key = st.secrets["GPT_API_KEY"]
 # Function to generate student remarks using GPT-3
 
 
-def generate_remarks(student_name, gender, adjectives):
+def generate_remarks(prompt, student_name, gender, adjectives):
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks about the student for the student's report card in third person by using the following descriptors: {adjectives}.",
+        prompt=prompt.format(student_name=student_name,
+                             gender=gender, adjectives=adjectives),
         max_tokens=100,
     )
     return response.choices[0].text
@@ -27,12 +28,26 @@ def main():
     st.image(img, width=100)
     st.title("Remarks Co-Pilot")
 
-    # File upload
+    # Prompt templates
+    prompt_templates = {
+        "For AC": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyality and learning dispositions: curiosity, collaboration and excellence.",
+        "For HCI": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a brief summary of the student's performance in class by using the following descriptors: {adjectives}.",
+        "For NJC": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a paragraph about the student's strengths and areas for improvement by using the following descriptors: {adjectives}."
+    }
+
+    # Prompt template selection
+    prompt_template = st.selectbox(
+        "Select a prompt template", list(prompt_templates.keys()))
+
+    # Prompt template editing
+    prompt_template_edited = st.text_area(
+        "Edit the prompt template", value=prompt_templates[prompt_template])
+
+    # Read the uploaded CSV file
     st.write("Upload a CSV file with columns: 'student_name', 'gender', 'adjectives'")
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
     if uploaded_file:
-        # Read the uploaded CSV file
         df = pd.read_csv(uploaded_file)
 
         # Check if the required columns are present
@@ -46,7 +61,7 @@ def main():
         remarks = []
         for _, row in df.iterrows():
             generated_remarks = generate_remarks(
-                row["student_name"], row["gender"], row["adjectives"])
+                prompt_template_edited, row["student_name"], row["gender"], row["adjectives"])
             print(
                 f"Generated remarks for {row['student_name']}: {generated_remarks}")
             remarks.append(generated_remarks)
