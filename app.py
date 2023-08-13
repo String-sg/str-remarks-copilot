@@ -14,14 +14,17 @@ openai.api_key = st.secrets["GPT_API_KEY"]
 # Function to generate student remarks using GPT-3
 
 
-def generate_remarks(prompt, student_name, gender, adjectives):
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt.format(student_name=student_name,
-                             gender=gender, adjectives=adjectives),
-        max_tokens=100,
+def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt_template_edited.format(
+                student_name=student_name, gender=gender, adjectives=adjectives)}
+        ],
+        max_tokens=200,
+        temperature=0
     )
-    return response.choices[0].text
+    return completion.choices[0].message
 
 
 def main():
@@ -30,9 +33,9 @@ def main():
 
     # Prompt templates
     prompt_templates = {
-        "For AC": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyality and learning dispositions: curiosity, collaboration and excellence.",
-        "For HCI": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a brief summary of the student's performance in class by using the following descriptors: {adjectives}.",
-        "For NJC": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a paragraph about the student's strengths and areas for improvement by using the following descriptors: {adjectives}."
+        "For AC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks of no more than 80 words about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyalty and learning dispositions: curiosity, collaboration and excellence.",
+        "For HCI Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a brief summary of no more than 80 words the student's performance in class by using the following descriptors: {adjectives}.",
+        "For NJC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a paragraph of no more than 80 words  about the student's strengths and areas for improvement by using the following descriptors: {adjectives}."
     }
 
     # Prompt template selection
