@@ -2,16 +2,41 @@ import streamlit as st
 import pandas as pd
 import openai
 from PIL import Image
-
+import webbrowser
 
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 
 
-# Set your OpenAI GPT-3 API key
-openai.api_key = st.secrets["GPT_API_KEY"]
+def get_credentials():
+    value = st.text_input(
+        "Enter your OpenAI API Key or Password", type="password", key="api_key_input")
+    if value == st.secrets["password"]:
+        return st.secrets["GPT_API_KEY"], True
+    elif validate_api_key(value):
+        return value, True
+    else:
+        return None, False
 
-# Function to generate student remarks using GPT-3
+
+def validate_api_key(value):
+    try:
+        # Set the API key for this specific request
+        openai.api_key = value
+        # Make a test call to the OpenAI API to the "davinci" model
+        openai.Completion.create(
+            engine="text-davinci-003",
+            prompt="Test",
+            max_tokens=5
+        )
+        return True  # If the call was successful, the API key is valid
+    except openai.error.AuthenticationError:
+        # If there's an authentication error, the API key is not valid
+        return False
+    except Exception as e:
+        # You may also handle other exceptions if needed
+        print("An unexpected error occurred. The API key seems invalid", str(e))
+        return False
 
 
 def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
@@ -30,7 +55,17 @@ def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
 def main():
     st.image(img, width=100)
     st.title("Remarks Co-Pilot")
+    if not check_password():
+        st.warning("Password validation failed.")
+        return
 
+    api_key, is_valid = get_credentials()  # Call this once
+
+    if api_key is None or not is_valid:
+        st.warning("Please enter a valid API key or password to proceed.")
+        return
+
+    openai.api_key = api_key
     # Prompt templates
     prompt_templates = {
         "For AC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks of no more than 80 words about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyalty and learning dispositions: curiosity, collaboration and excellence.",
@@ -47,7 +82,13 @@ def main():
         "Edit the prompt template", value=prompt_templates[prompt_template])
 
     # Read the uploaded CSV file
-    st.write("Upload a CSV file with columns: 'student_name', 'gender', 'adjectives'")
+    st.text("")
+    st.write(
+        "Upload a CSV file with columns: 'student_name', 'gender', 'adjectives'. Need a template?")
+    url = 'https://go.gov.sg/remarks-dummy-student'
+
+    if st.button('Download template'):
+        webbrowser.open_new_tab(url)
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
     if uploaded_file:
@@ -97,7 +138,9 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
 def check_password():
-    """Returns `True` if the user had the correct password."""
+    # Skip password check if developing on local
+    if st.secrets.get("global", {}).get("disable_password_check"):
+        return True
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
@@ -113,25 +156,21 @@ def check_password():
         st.title("Remarks Co-Pilot")
         st.write("Beta access - limited demo as proof of concept")
         st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
+            "Password", type="password", on_change=password_entered, key="password_input")
         return False
     elif not st.session_state["password_correct"]:
         # Password not correct, show input + error.
         st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
+            "Password", type="password", on_change=password_entered, key="password_input")
         st.error("😕 Password incorrect")
         return False
     else:
         # Password correct.
-        return main()
+        return True
 
 
 if check_password():
-    st.write("Here goes your normal Streamlit app...")
-    st.button("Click me")
-
+    main()
 
 # add basic font styling
 streamlit_style = """
