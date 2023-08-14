@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import openai
 from PIL import Image
+import webbrowser
 
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
@@ -81,7 +82,13 @@ def main():
         "Edit the prompt template", value=prompt_templates[prompt_template])
 
     # Read the uploaded CSV file
-    st.write("Upload a CSV file with columns: 'student_name', 'gender', 'adjectives'")
+    st.text("")
+    st.write(
+        "Upload a CSV file with columns: 'student_name', 'gender', 'adjectives'. Need a template?")
+    url = 'https://go.gov.sg/remarks-dummy-student'
+
+    if st.button('Download template'):
+        webbrowser.open_new_tab(url)
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
     if uploaded_file:
