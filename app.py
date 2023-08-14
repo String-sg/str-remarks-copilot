@@ -23,6 +23,26 @@ def get_credentials():
         return None, None
 
 
+def validate_api_key(api_key):
+    try:
+        # Set the API key for this specific request
+        openai.api_key = api_key
+        # Make a test call to the OpenAI API to the "davinci" model
+        openai.Completion.create(
+            engine="text-davinci-003",
+            prompt="Test",
+            max_tokens=5
+        )
+        return True  # If the call was successful, the API key is valid
+    except openai.error.AuthenticationError:
+        # If there's an authentication error, the API key is not valid
+        return False
+    except Exception as e:
+        # You may also handle other exceptions if needed
+        print("An unexpected error occurred. The API key seems invalid", str(e))
+        return False
+
+
 def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
