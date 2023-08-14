@@ -3,7 +3,6 @@ import pandas as pd
 import openai
 from PIL import Image
 
-
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 
@@ -11,7 +10,17 @@ st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 # Set your OpenAI GPT-3 API key
 openai.api_key = st.secrets["GPT_API_KEY"]
 
-# Function to generate student remarks using GPT-3
+
+def get_credentials():
+    # Prompt the user to enter API key or Password
+    value = st.text_input(
+        "Enter your OpenAI API Key or Password", type="password")
+    if value == st.secrets["password"]:  # Assuming password is stored in secrets
+        return st.secrets["GPT_API_KEY"], True
+    elif validate_api_key(value):
+        return value, False
+    else:
+        return None, None
 
 
 def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
@@ -30,6 +39,21 @@ def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
 def main():
     st.image(img, width=100)
     st.title("Remarks Co-Pilot")
+    st.title("Remarks Co-Pilot")
+    # Get the API key or password from the user
+    api_key_or_password, is_password = get_api_key_or_password()
+
+    if not api_key_or_password:
+        # Warning message if API key or password is not provided
+        st.warning("Please enter the API key or password to proceed.")
+        return
+
+    if is_password:
+        # If password was entered, use the API key from secrets
+        openai.api_key = st.secrets["GPT_API_KEY"]
+    else:
+        # If API key was entered by the user, use it
+        openai.api_key = api_key_or_password
 
     # Prompt templates
     prompt_templates = {
@@ -97,7 +121,9 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
 def check_password():
-    """Returns `True` if the user had the correct password."""
+    # Skip password check if developing on local
+    if st.secrets.get("global", {}).get("disable_password_check"):
+        return True
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
@@ -129,9 +155,7 @@ def check_password():
 
 
 if check_password():
-    st.write("Here goes your normal Streamlit app...")
-    st.button("Click me")
-
+    main()
 
 # add basic font styling
 streamlit_style = """
