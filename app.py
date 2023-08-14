@@ -7,26 +7,21 @@ img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
 
 
-# Set your OpenAI GPT-3 API key
-openai.api_key = st.secrets["GPT_API_KEY"]
-
-
 def get_credentials():
-    # Prompt the user to enter API key or Password
     value = st.text_input(
-        "Enter your OpenAI API Key or Password", type="password")
-    if value == st.secrets["password"]:  # Assuming password is stored in secrets
+        "Enter your OpenAI API Key or Password", type="password", key="api_key_input")
+    if value == st.secrets["password"]:
         return st.secrets["GPT_API_KEY"], True
     elif validate_api_key(value):
-        return value, False
+        return value, True
     else:
-        return None, None
+        return None, False
 
 
-def validate_api_key(api_key):
+def validate_api_key(value):
     try:
         # Set the API key for this specific request
-        openai.api_key = api_key
+        openai.api_key = value
         # Make a test call to the OpenAI API to the "davinci" model
         openai.Completion.create(
             engine="text-davinci-003",
@@ -59,22 +54,17 @@ def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
 def main():
     st.image(img, width=100)
     st.title("Remarks Co-Pilot")
-    st.title("Remarks Co-Pilot")
-    # Get the API key or password from the user
-    api_key_or_password, is_password = get_api_key_or_password()
-
-    if not api_key_or_password:
-        # Warning message if API key or password is not provided
-        st.warning("Please enter the API key or password to proceed.")
+    if not check_password():
+        st.warning("Password validation failed.")
         return
 
-    if is_password:
-        # If password was entered, use the API key from secrets
-        openai.api_key = st.secrets["GPT_API_KEY"]
-    else:
-        # If API key was entered by the user, use it
-        openai.api_key = api_key_or_password
+    api_key, is_valid = get_credentials()  # Call this once
 
+    if api_key is None or not is_valid:
+        st.warning("Please enter a valid API key or password to proceed.")
+        return
+
+    openai.api_key = api_key
     # Prompt templates
     prompt_templates = {
         "For AC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks of no more than 80 words about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyalty and learning dispositions: curiosity, collaboration and excellence.",
@@ -159,19 +149,17 @@ def check_password():
         st.title("Remarks Co-Pilot")
         st.write("Beta access - limited demo as proof of concept")
         st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
+            "Password", type="password", on_change=password_entered, key="password_input")
         return False
     elif not st.session_state["password_correct"]:
         # Password not correct, show input + error.
         st.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
+            "Password", type="password", on_change=password_entered, key="password_input")
         st.error("😕 Password incorrect")
         return False
     else:
         # Password correct.
-        return main()
+        return True
 
 
 if check_password():
