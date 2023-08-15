@@ -142,6 +142,20 @@ def check_password():
     if st.secrets.get("global", {}).get("disable_password_check"):
         return True
 
+    # Check if the password has been entered in the session state
+    if "password" in st.session_state:
+        # Verify the entered password with the one stored in st.secrets
+        if st.session_state["password"] == st.secrets["password"]:
+            return True
+        else:
+            st.error("😕 Password incorrect")
+            return False
+
+    # If the password hasn't been entered yet, show a text input for the user to enter it
+    st.text_input("Password", type="password",
+                  on_change=password_entered, key="password_input")
+    return False  # Ensure a boolean value is always returned
+
 
 def password_entered():
     """Checks whether a password entered by the user is correct."""
