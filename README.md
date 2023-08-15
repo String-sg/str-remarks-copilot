@@ -6,7 +6,7 @@ Reduce effort with skeletal qualitative remarks by uploading structured data abo
 
 Disclaimer: educators are highly encouraged to review the output for accuracy 
 
-##Changelog <br>
+## Changelog <br>
 15 Aug 2023 <br>
 - Added login via password or OpenAI API Key
 
