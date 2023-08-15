@@ -6,6 +6,11 @@ Reduce effort with skeletal qualitative remarks by uploading structured data abo
 
 Disclaimer: educators are highly encouraged to review the output for accuracy 
 
+To run on local, clone the repo
+```
+streamlit run app.py
+```
+
 This is a proof-of-concept app. For the full-stack re-build, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
 
 ## Changelog <br>
