@@ -150,7 +150,7 @@ def check_password():
         else:
             st.session_state["password_correct"] = False
 
-    if "password_correct" not in st.session_state:
+    if "password_correct" not in st.session_state or "password" not in st.session_state:
         # First run, show input for password.
         st.image(img, width=100)
         st.title("Remarks Co-Pilot")
