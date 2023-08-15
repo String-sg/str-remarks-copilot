@@ -142,15 +142,19 @@ def check_password():
     if st.secrets.get("global", {}).get("disable_password_check"):
         return True
 
-    def password_entered():
-        """Checks whether a password entered by the user is correct."""
+
+def password_entered():
+    """Checks whether a password entered by the user is correct."""
+    if "password" in st.session_state:
         if st.session_state["password"] == st.secrets["password"]:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # don't store password
         else:
             st.session_state["password_correct"] = False
+    else:
+        st.session_state["password"] = st.text_input(
+            "Password", type="password", key="password_input")
 
-    if "password_correct" not in st.session_state:
+    if "password_correct" not in st.session_state or "password" not in st.session_state:
         # First run, show input for password.
         st.image(img, width=100)
         st.title("Remarks Co-Pilot")
