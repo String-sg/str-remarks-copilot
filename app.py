@@ -6,6 +6,7 @@ import webbrowser
 
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
+print(st.secrets.get("global", {}).get("disable_password_check"))
 
 
 def get_credentials():
