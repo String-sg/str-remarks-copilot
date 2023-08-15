@@ -152,11 +152,6 @@ def check_password():
             st.error("😕 Password incorrect")
             return False
 
-    # If the password hasn't been entered yet, show a text input for the user to enter it
-    st.text_input("Password", type="password",
-                  on_change=password_entered, key="password_input")
-    return False  # Ensure a boolean value is always returned
-
 
 def password_entered():
     """Checks whether a password entered by the user is correct."""
