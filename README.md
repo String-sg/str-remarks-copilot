@@ -6,6 +6,8 @@ Reduce effort with skeletal qualitative remarks by uploading structured data abo
 
 Disclaimer: educators are highly encouraged to review the output for accuracy 
 
+This is a proof-of-concept app. For the full-stack re-build, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
+
 ## Changelog <br>
 15 Aug 2023 <br>
 - Added login via password or OpenAI API Key
