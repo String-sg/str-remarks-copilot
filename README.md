@@ -14,7 +14,7 @@ streamlit run app.py
 This is a proof-of-concept app. For the full-stack re-build, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
 
 ## Changelog <be>
-_Note: this is in maintenance mode as we do the full-stack rebuild - watch this space (:_
+_Note: this is in maintenance mode as we do the full-stack rebuild - watch this space (:_ <br>
 15 Aug 2023 <br>
 - Added login via password or OpenAI API Key
 
