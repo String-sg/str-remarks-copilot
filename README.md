@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This repo is deprecated 
+
 # String Remarks Co-Pilot
 <img width="1025" alt="image" src="https://github.com/String-sg/str-remarks-copilot/assets/44336310/3f4a739b-9939-4ca1-b475-b323f4eed900">
 <br><br>
