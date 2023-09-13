@@ -1,5 +1,5 @@
 > [!WARNING]  
-> This repo is deprecated 
+> This repo is no longer maintained. For end users interested in remarks generation, please see [Remarks Co-Pilot](https://remarkscopilot.vercel.app/) instead. 
 
 # String Remarks Co-Pilot
 <img width="1025" alt="image" src="https://github.com/String-sg/str-remarks-copilot/assets/44336310/3f4a739b-9939-4ca1-b475-b323f4eed900">
