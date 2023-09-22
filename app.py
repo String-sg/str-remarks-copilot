@@ -3,7 +3,6 @@ import pandas as pd
 import openai
 from PIL import Image
 import webbrowser
-import ast  # Import the Abstract Syntax Trees library
 
 img = Image.open('str.png')
 st.set_page_config(page_title='Remarks Co-Pilot', page_icon=img)
@@ -59,7 +58,7 @@ def generate_remarks(prompt_template, prompt_template_edited, student_name, gend
         max_tokens=200,
         temperature=0
     )
-    return completion.choices[0].message
+    return completion.choices[0].message['content']
 
 
 def main():
@@ -78,7 +77,7 @@ def main():
     openai.api_key = api_key
     # Prompt templates
     prompt_templates = {
-        "For AC Vetting": "Refine the existing paragraph for their termly report book which would be shared with them and their parents. Write in 3rd person. Adopt a formal but positive tone when expressing comments. If specific examples are lacking, include a question to prompt the end user to write more specific remarks. If the following string is found in the input above, use the exact substitutions: instead of using 'pupil', use 'student'. Instead of 'tables', use 'desks'. Instead of 'well-mannered' use 'well-behaved'. Instead of 'ICT Captain' use 'ICT Champion'. Instead of 'co-operative' use 'cooperative'. Instead of 'for displaying Loyalty', use 'for displaying loyalty'. Instead of 'sweet disposition/ sweet-natured', use 'gentle disposition/ good-natured'. Instead of 'best of his abilities', use 'best of his ability'. Instead of 'as the English Captain', use 'as the English Language Captain'. If direct and concrete steps to take for student in terms of academic and/or character and/or social emotional' does not exist in the input, raise it as a question in the output 'No direct and concrete steps for the student to improve'. Use positive adjectives to encourage student in pursuing passion/goals and recognise effort and improvement. When there is a change in the character traits or moving to another point, we should use {student_name} again.",
+        "For AC Vetting": "Refine an existing paragraph for their termly report book which would be shared with them and their parents. Write in 3rd person. Adopt a formal but positive tone when expressing comments. If the word 'pupil' exists, replace with 'student'. If the word 'tables' exists, replace with 'desks'. If the term 'well-mannered' exists, replace with 'well-behaved'. If the term 'ICT Captain' exists, replace with 'ICT Champion'. If the word 'co-operative' is used, replace with 'cooperative'. If the term 'for displaying Loyalty' exists, replace with 'for displaying loyalty'.If the term 'sweet disposition/ sweet-natured' exists, replace with 'gentle disposition' or good-natured'. If the term 'best of his abilities' exists, replace with 'best of his ability'. If the term 'as the English Captain' exists, replace with 'as the English Language Captain'. If direct and concrete steps to take for student in terms of academic and/or character and/or social emotional' does not exist in the input, raise it as a question in the output 'No direct and concrete steps for the student to improve'. Use positive adjectives to encourage student in pursuing passion/goals and recognise effort and improvement. When there is a change in the character traits or moving to another point, we should use {student_name} again.",
         "For AC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write qualitative remarks of no more than 80 words about the student for the student's report card in third person by using the following descriptors: {adjectives}. Remarks given should be speciifc, objective, acitonable and positive. Link to character traits: integrity, love and loyalty and learning dispositions: curiosity, collaboration and excellence.",
         "For HCI Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a brief summary of no more than 80 words the student's performance in class by using the following descriptors: {adjectives}.",
         "For NJC Demo": "Assume the role of a teacher. Use '{student_name}' as student name, use '{gender}' as the gender pronoun and write a paragraph of no more than 80 words  about the student's strengths and areas for improvement by using the following descriptors: {adjectives}."
@@ -129,9 +128,7 @@ def main():
                     prompt_template, prompt_template_edited, row["student_name"], "", row.get(
                         "remarks", "")
                 )
-                cleaned_remarks = ast.literal_eval(
-                    generated_remarks)['content']
-                remarks.append(cleaned_remarks)
+                remarks.append(generated_remarks)
             else:
                 if "gender" not in df.columns or "adjectives" not in df.columns:
                     st.error(
@@ -141,14 +138,10 @@ def main():
                     prompt_template, prompt_template_edited, row["student_name"], row["gender"], row.get(
                         "adjectives", "")
                 )
-                cleaned_remarks = ast.literal_eval(
-                    generated_remarks)['content']
-                remarks.append(cleaned_remarks)
+                remarks.append(generated_remarks)
         print(
             f"Generated remarks for {row['student_name']}: {generated_remarks}")
         df['student_remarks'] = remarks
-        df['student_remarks'] = df['student_remarks'].apply(
-            lambda x: ast.literal_eval(x)['content'] if isinstance(x, str) else x)
     else:
         st.warning("Please upload a CSV file.")
         return
