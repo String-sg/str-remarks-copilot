@@ -15,10 +15,15 @@ To run on local, clone the repo
 streamlit run app.py
 ```
 
-This is a proof-of-concept app. For the full-stack re-build, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
+This is a proof-of-concept app. <br>
+
+For the full-stack re-build that is live, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
 
 ## Changelog <be>
 _Note: this is in maintenance mode as we do the full-stack rebuild - watch this space (:_ <br>
+22 Sep 2023 <br>
+- Added vetters prompt for AC 
+
 15 Aug 2023 <br>
 - Added login via password or OpenAI API Key
 
