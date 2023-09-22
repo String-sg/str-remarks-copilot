@@ -39,13 +39,21 @@ def validate_api_key(value):
         print("An unexpected error occurred. The API key seems invalid", str(e))
         return False
 
+# update function to accommodate vetting
 
-def generate_remarks(prompt_template_edited, student_name, gender, adjectives):
+
+def generate_remarks(prompt_template, prompt_template_edited, student_name, gender, remarks):
+    if prompt_template == "For AC Vetting":
+        message_content = prompt_template_edited.format(
+            student_name=student_name, remarks=remarks)
+    else:
+        message_content = prompt_template_edited.format(
+            student_name=student_name, gender=gender, adjectives=adjectives)
+
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": prompt_template_edited.format(
-                student_name=student_name, gender=gender, adjectives=adjectives)}
+            {"role": "user", "content": message_content}
         ],
         max_tokens=200,
         temperature=0
@@ -93,39 +101,47 @@ def main():
         webbrowser.open_new_tab(url)
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
+    remarks = []
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-
-        # Check if the required columns are present
-        required_columns = ["student_name", "gender", "adjectives"]
-        if not all(col in df.columns for col in required_columns):
-            st.error(
-                "The CSV file should contain 'student_name', 'gender', and 'adjectives' columns.")
-            return
-
         # Generate student remarks using GPT-3 and add them to the DataFrame
-        remarks = []
         for _, row in df.iterrows():
+            if prompt_template == "For AC vetting":
+                if "student_name" not in df.columns or "remarks" not in df.columns:
+                    st.error(
+                        "The CSV must contain 'student_name' and 'remarks' columns for the AC vetting template.")
+                    return
+            else:
+                if "gender" not in df.columns or "adjectives" not in df.columns:
+                    st.error(
+                        "The CSV must contain 'gender' and 'adjectives' columns for this template.")
+                    return
             generated_remarks = generate_remarks(
-                prompt_template_edited, row["student_name"], row["gender"], row["adjectives"])
+                prompt_template, prompt_template_edited, row["student_name"], row["gender"], row.get(
+                    "adjectives", "")
+            )
+            remarks.append(generated_remarks)
             print(
                 f"Generated remarks for {row['student_name']}: {generated_remarks}")
-            remarks.append(generated_remarks)
-            print(remarks)
+    else:
+        st.warning("Please upload a CSV file.")
+        return
+    # Update the DataFrame with the 'student_remarks' column
+    df["student_remarks"] = remarks
 
-        # Update the DataFrame with the 'student_remarks' column
-        print("DataFrame Columns:", df.columns)
-        df["student_remarks"] = remarks
-        print(df["student_remarks"][0])
+    # Update the DataFrame with the 'student_remarks' column
+    print("DataFrame Columns:", df.columns)
+    df["student_remarks"] = remarks
+    print(df["student_remarks"][0])
 
-        # Show the DataFrame with the generated remarks
-        st.write("DataFrame with Remarks:")
-        st.markdown(df.to_html(escape=False), unsafe_allow_html=True)
+    # Show the DataFrame with the generated remarks
+    st.write("DataFrame with Remarks:")
+    st.markdown(df.to_html(escape=False), unsafe_allow_html=True)
 
-        # Download the new CSV file
-        st.write("Click below to download the new CSV file:")
-        st.download_button(label="Download CSV", data=df.to_csv(
-            index=False), file_name="student_report_card_with_remarks.csv", mime="text/csv")
+    # Download the new CSV file
+    st.write("Click below to download the new CSV file:")
+    st.download_button(label="Download CSV", data=df.to_csv(
+        index=False), file_name="student_report_card_with_remarks.csv", mime="text/csv")
 
 
 hide_streamlit_style = """
