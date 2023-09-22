@@ -101,25 +101,45 @@ def main():
         webbrowser.open_new_tab(url)
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
+    # add a try catch to validate csv
+    try:
+        df = pd.read_csv(uploaded_file)
+        # Check if DataFrame is empty
+        if df.empty:
+            st.error("The uploaded CSV file is empty.")
+            return
+        # Continue with the rest of your code
+    except pd.errors.EmptyDataError:
+        st.error("The uploaded CSV file is empty or not properly formatted.")
+        return
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+        return
+
     remarks = []
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        # Generate student remarks using GPT-3 and add them to the DataFrame
-        for _, row in df.iterrows():
-            if prompt_template == "For AC vetting":
-                if "student_name" not in df.columns or "remarks" not in df.columns:
-                    st.error(
-                        "The CSV must contain 'student_name' and 'remarks' columns for the AC vetting template.")
-                    return
-            else:
-                if "gender" not in df.columns or "adjectives" not in df.columns:
-                    st.error(
-                        "The CSV must contain 'gender' and 'adjectives' columns for this template.")
-                    return
-            generated_remarks = generate_remarks(
-                prompt_template, prompt_template_edited, row["student_name"], row["gender"], row.get(
-                    "adjectives", "")
-            )
+        if uploaded_file:
+            df = pd.read_csv(uploaded_file)
+            for _, row in df.iterrows():
+                if prompt_template == "For AC Vetting":
+                    if "student_name" not in df.columns or "remarks" not in df.columns:
+                        st.error(
+                            "The CSV must contain 'student_name' and 'remarks' columns for the AC vetting template.")
+                        return
+                    generated_remarks = generate_remarks(
+                        prompt_template, prompt_template_edited, row["student_name"], "", row.get(
+                            "remarks", "")
+                    )
+                else:
+                    if "gender" not in df.columns or "adjectives" not in df.columns:
+                        st.error(
+                            "The CSV must contain 'gender' and 'adjectives' columns for this template.")
+                        return
+                    generated_remarks = generate_remarks(
+                        prompt_template, prompt_template_edited, row["student_name"], row["gender"], row.get(
+                            "adjectives", "")
+                    )
             remarks.append(generated_remarks)
             print(
                 f"Generated remarks for {row['student_name']}: {generated_remarks}")
