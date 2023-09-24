@@ -61,7 +61,9 @@ def generate_remarks(prompt_template, prompt_template_edited, student_name, gend
         max_tokens=200,
         temperature=0
     )
-    return completion.choices[0].message['content']
+    generated_remarks = completion.choices[0].message['content']
+    # Replace the placeholder with the actual name
+    return generated_remarks.replace(placeholder_name, student_name)
 
 
 def main():
