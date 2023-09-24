@@ -1,6 +1,6 @@
 > [!WARNING]  
-> This repo is not actively maintained except for experimental builds to test features for Remarks Co-Pilot, primarily for vetters flow. <br>
-> For users interested in remarks generation, please see [Remarks Co-Pilot](https://remarkscopilot.vercel.app/) instead. 
+> This repo is not actively maintained except for experimental builds to test features for Remarks Co-Pilot, primarily for vetters flow. <br><br>
+> For users interested in remarks generation, **please see [Remarks Co-Pilot](https://remarkscopilot.vercel.app/) instead**. 
 
 # String Remarks Co-Pilot
 <img width="1025" alt="image" src="https://github.com/String-sg/str-remarks-copilot/assets/44336310/3f4a739b-9939-4ca1-b475-b323f4eed900">
