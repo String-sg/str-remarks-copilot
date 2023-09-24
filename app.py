@@ -43,6 +43,7 @@ def validate_api_key(value):
 
 
 def generate_remarks(prompt_template, prompt_template_edited, student_name, gender, remarks):
+    placeholder_name = "Student X"  # Use this as a placeholder
     if prompt_template == "For AC Vetting":
         message_content = prompt_template_edited.format(
             student_name=student_name, remarks=remarks)
