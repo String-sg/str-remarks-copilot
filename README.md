@@ -1,5 +1,5 @@
 > [!WARNING]  
-> This repo is not actively maintained except for experimental builds to test features for Remarks Co-Pilot. 
+> This repo is not actively maintained except for experimental builds to test features for Remarks Co-Pilot, primarily for vetters flow. <br>
 > For users interested in remarks generation, please see [Remarks Co-Pilot](https://remarkscopilot.vercel.app/) instead. 
 
 # String Remarks Co-Pilot
