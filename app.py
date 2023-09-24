@@ -46,10 +46,12 @@ def generate_remarks(prompt_template, prompt_template_edited, student_name, gend
     placeholder_name = "Student X"  # Use this as a placeholder
     if prompt_template == "For AC Vetting":
         message_content = prompt_template_edited.format(
-            student_name=student_name, remarks=remarks)
+            student_name=placeholder_name, remarks=remarks
+        )
     else:
         message_content = prompt_template_edited.format(
-            student_name=student_name, gender=gender, adjectives=adjectives)
+            student_name=placeholder_name, gender=gender, adjectives=adjectives
+        )
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
