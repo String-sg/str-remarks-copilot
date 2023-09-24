@@ -20,7 +20,10 @@ This is a proof-of-concept app. <br>
 For the full-stack re-build that is live, see https://github.com/String-sg/remarks-copilot (Ping Kahhow for access)
 
 ## Changelog <be>
-_Note: this is in maintenance mode as we do the full-stack rebuild - watch this space (:_ <br>
+_Note: this is in maintenance mode as we do the full-stack rebuild - watch this space (:_ <br><br>
+24 Sep 2023<br>
+- Created function to replace student name instead of inputting it in ChatGPT to minimize human error 
+  
 22 Sep 2023 <br>
 - Added vetters prompt for AC 
 
